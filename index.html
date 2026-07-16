@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PapaZ Development | Premium FiveM Scripts</title>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -16,7 +18,6 @@
             --accent-glow: #00f2fe;
             --accent-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
             --accent-purple: #7f00ff;
-            --accent-purple-glow: #e100ff;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
@@ -31,6 +32,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: var(--font-sans);
+            scroll-behavior: smooth;
         }
 
         body {
@@ -39,9 +41,24 @@
             line-height: 1.6;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(127, 0, 255, 0.05) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(127, 0, 255, 0.04) 0%, transparent 40%);
             background-attachment: fixed;
+        }
+
+        /* Sayfa Gösterim Kontrolü (SPA) */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Header / Navbar */
@@ -68,7 +85,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -0.5px;
         }
 
         .logo i {
@@ -95,11 +111,12 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            transition: color 0.3s, transform 0.2s;
+            transition: color 0.3s;
+            cursor: pointer;
             position: relative;
         }
 
-        nav ul li a:hover {
+        nav ul li a.active-nav, nav ul li a:hover {
             color: var(--text-primary);
         }
 
@@ -114,8 +131,45 @@
             transition: width 0.3s ease;
         }
 
-        nav ul li a:hover::after {
+        nav ul li a.active-nav::after {
             width: 100%;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .cart-trigger {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #fff;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .cart-trigger:hover {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e100ff;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 800;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .discord-btn {
@@ -142,9 +196,8 @@
 
         /* Hero Section */
         .hero {
-            padding: 140px 8% 100px;
+            padding: 120px 8% 80px;
             text-align: center;
-            position: relative;
         }
 
         .hero-badge {
@@ -199,7 +252,6 @@
             font-size: 18px;
             max-width: 650px;
             margin: 0 auto 36px;
-            font-weight: 400;
         }
 
         .cta-group {
@@ -208,21 +260,24 @@
             gap: 16px;
         }
 
-        .primary-btn {
-            background: var(--accent-gradient);
-            color: #000;
+        .primary-btn, .secondary-btn {
             padding: 14px 32px;
-            border: none;
             border-radius: 8px;
             font-size: 15px;
-            font-weight: 700;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.25);
             display: inline-flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .primary-btn {
+            background: var(--accent-gradient);
+            color: #000;
+            border: none;
+            font-weight: 700;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.25);
         }
 
         .primary-btn:hover {
@@ -235,16 +290,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 15px;
             font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .secondary-btn:hover {
@@ -255,7 +301,7 @@
 
         /* Features Section */
         .features {
-            padding: 60px 8%;
+            padding: 40px 8%;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 24px;
@@ -297,12 +343,12 @@
 
         /* Products Section */
         .products-container {
-            padding: 100px 8% 60px;
+            padding: 80px 8% 60px;
         }
 
         .section-header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
         .section-header h2 {
@@ -310,7 +356,6 @@
             font-size: 38px;
             font-weight: 700;
             margin-bottom: 16px;
-            letter-spacing: -0.5px;
         }
 
         .section-header p {
@@ -320,13 +365,40 @@
             margin: 0 auto;
         }
 
+        /* Filtreleme Butonları */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active-filter, .filter-btn:hover {
+            background: var(--accent-gradient);
+            color: #000;
+            border-color: transparent;
+            font-weight: 700;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 30px;
         }
 
-        /* Modern Card Design */
+        /* Card Tasarımı */
         .card {
             background-color: var(--bg-card);
             border-radius: 16px;
@@ -336,27 +408,10 @@
             position: relative;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.03) 0%, transparent 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
         .card:hover {
             transform: translateY(-8px);
             border-color: rgba(0, 242, 254, 0.25);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .card:hover::before {
-            opacity: 1;
         }
 
         .card-img {
@@ -403,7 +458,6 @@
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 12px;
-            letter-spacing: -0.3px;
         }
 
         .card-desc {
@@ -435,8 +489,6 @@
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
         }
 
         .price {
@@ -456,7 +508,6 @@
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s ease;
-            text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -468,6 +519,240 @@
             color: #000;
             font-weight: 700;
             box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+        }
+
+        /* SSS (SSS) Page */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .faq-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(0, 242, 254, 0.2);
+        }
+
+        .faq-header {
+            padding: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            font-family: var(--font-space);
+        }
+
+        .faq-icon {
+            transition: transform 0.3s;
+            color: var(--accent-glow);
+        }
+
+        .faq-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .faq-item.open .faq-body {
+            padding: 0 24px 24px 24px;
+            max-height: 200px; /* Yaklaşık içerik boyutu */
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Kullanım Koşulları (Terms) Page */
+        .terms-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .terms-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .terms-box h3 {
+            font-family: var(--font-space);
+            font-size: 20px;
+            margin: 30px 0 15px;
+            color: #fff;
+            border-left: 3px solid var(--accent-glow);
+            padding-left: 12px;
+        }
+
+        .terms-box h3:first-of-type {
+            margin-top: 0;
+        }
+
+        .terms-box p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        /* Sepet Bölümü (Sidebar / Drawer) */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #090d16;
+            border-left: 1px solid var(--border-color);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+        }
+
+        .cart-header h3 {
+            font-family: var(--font-space);
+            font-size: 20px;
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .cart-close:hover {
+            color: #fff;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cart-item-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .cart-item-info span {
+            color: var(--price-tag);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .remove-item:hover {
+            opacity: 0.8;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-size: 14px;
+        }
+
+        .cart-footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .checkout-btn {
+            background: var(--accent-gradient);
+            color: #000;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1990;
+            display: none;
+        }
+
+        .cart-overlay.show {
+            display: block;
         }
 
         /* Footer */
@@ -518,6 +803,7 @@
             text-decoration: none;
             font-size: 14px;
             transition: color 0.3s;
+            cursor: pointer;
         }
 
         .footer-links ul li a:hover {
@@ -581,7 +867,7 @@
                 padding: 20px;
             }
             .hero {
-                padding: 100px 5% 60px;
+                padding: 80px 5% 50px;
             }
             .hero h1 {
                 font-size: 40px;
@@ -594,134 +880,194 @@
                 flex-direction: column;
                 text-align: center;
             }
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header>
-        <a href="#" class="logo">
+        <a onclick="navigate('home')" class="logo" style="cursor: pointer;">
             <i class="fa-solid fa-bolt"></i> PapaZ<span>.dev</span>
         </a>
         <nav>
             <ul>
-                <li><a href="#">Ana Sayfa</a></li>
-                <li><a href="#scripts">Scriptler</a></li>
-                <li><a href="#özellikler">Neden Biz?</a></li>
-                <li>
-                    <a href="https://discord.gg/papazdev" target="_blank" class="discord-btn">
-                        <i class="fa-brands fa-discord"></i> Topluluğa Katıl
-                    </a>
-                </li>
+                <li><a onclick="navigate('home')" id="nav-home" class="active-nav">Ana Sayfa</a></li>
+                <li><a onclick="navigate('scripts')" id="nav-scripts">Scriptler</a></li>
+                <li><a onclick="navigate('faq')" id="nav-faq">SSS</a></li>
+                <li><a onclick="navigate('terms')" id="nav-terms">Kullanım Koşulları</a></li>
             </ul>
         </nav>
+        <div class="nav-buttons">
+            <button class="cart-trigger" onclick="toggleCart()">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <span class="cart-count" id="cart-count">0</span>
+            </button>
+            <a href="https://discord.gg/papazdev" target="_blank" class="discord-btn">
+                <i class="fa-brands fa-discord"></i> Discord
+            </a>
+        </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-badge">
-            <span></span> PapaZ Development Aktif
-        </div>
-        <h1>Sunucunuzu <span>Geleceğe</span> Taşıyın</h1>
-        <p>Ultra optimize, modern arayüz tasarımlarına sahip ve üstün performanslı FiveM scriptleri ile rol yapma deneyimini kusursuzlaştırın.</p>
-        <div class="cta-group">
-            <a href="#scripts" class="primary-btn">
-                <i class="fa-solid fa-compass"></i> Scriptleri İncele
-            </a>
-            <a href="https://discord.gg/papazdev" target="_blank" class="secondary-btn">
-                <i class="fa-brands fa-discord"></i> Discord Yardımı
-            </a>
-        </div>
-    </section>
+    <!-- ================= ANA SAYFA SECTION ================= -->
+    <main id="page-home" class="page-section active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span></span> PapaZ Development Aktif
+            </div>
+            <h1>Sunucunuzu <span>Geleceğe</span> Taşıyın</h1>
+            <p>Ultra optimize, modern arayüz tasarımlarına sahip ve üstün performanslı FiveM scriptleri ile rol yapma deneyimini kusursuzlaştırın.</p>
+            <div class="cta-group">
+                <a onclick="navigate('scripts')" class="primary-btn">
+                    <i class="fa-solid fa-compass"></i> Scriptleri İncele
+                </a>
+                <a href="https://discord.gg/papazdev" target="_blank" class="secondary-btn">
+                    <i class="fa-brands fa-discord"></i> Discord Yardımı
+                </a>
+            </div>
+        </section>
 
-    <section class="features" id="özellikler">
-        <div class="feat-box">
-            <i class="fa-solid fa-gauge-high feat-icon"></i>
-            <h3>Yüksek Optimizasyon</h3>
-            <p>Tüm scriptlerimiz 0.00ms resmon değerini hedefleyen, sunucuyu yormayan kod blokları ile hazırlanır.</p>
-        </div>
-        <div class="feat-box">
-            <i class="fa-solid fa-wand-magic-sparkles feat-icon"></i>
-            <h3>Modern UI Arayüzü</h3>
-            <p>Kullanıcı dostu, estetik, akıcı animasyonlara sahip özgün HTML/CSS/JS arayüzleri.</p>
-        </div>
-        <div class="feat-box">
-            <i class="fa-solid fa-headset feat-icon"></i>
-            <h3>7/24 Teknik Destek</h3>
-            <p>Yaşayabileceğiniz her türlü kurulum ve entegrasyon probleminde Discord ekibimiz yanınızda.</p>
-        </div>
-    </section>
+        <!-- Features -->
+        <section class="features">
+            <div class="feat-box">
+                <i class="fa-solid fa-gauge-high feat-icon"></i>
+                <h3>Yüksek Optimizasyon</h3>
+                <p>Tüm scriptlerimiz 0.00ms resmon değerini hedefleyen, sunucuyu yormayan kod blokları ile hazırlanır.</p>
+            </div>
+            <div class="feat-box">
+                <i class="fa-solid fa-wand-magic-sparkles feat-icon"></i>
+                <h3>Modern UI Arayüzü</h3>
+                <p>Kullanıcı dostu, estetik, akıcı animasyonlara sahip özgün HTML/CSS/JS arayüzleri.</p>
+            </div>
+            <div class="feat-box">
+                <i class="fa-solid fa-headset feat-icon"></i>
+                <h3>7/24 Teknik Destek</h3>
+                <p>Yaşayabileceğiniz her türlü kurulum ve entegrasyon probleminde Discord ekibimiz yanınızda.</p>
+            </div>
+        </section>
+    </main>
 
-    <section class="products-container" id="scripts">
-        <div class="section-header">
-            <h2>Premium Scriptler</h2>
-            <p>Her detayı özenle tasarlanmış, en çok tercih edilen FiveM eklentilerimiz.</p>
-        </div>
-        
-        <div class="grid">
+    <!-- ================= SCRİPTLER (MAĞAZA) SECTION ================= -->
+    <main id="page-scripts" class="page-section">
+        <section class="products-container">
+            <div class="section-header">
+                <h2>Tüm Premium Scriptler</h2>
+                <p>Kategorilere göre filtreleyin ve sunucunuza en uygun sistemi hemen seçin.</p>
+            </div>
+
+            <!-- Filtreler -->
+            <div class="filter-container">
+                <button class="filter-btn active-filter" onclick="filterScripts('all')">Tümü</button>
+                <button class="filter-btn" onclick="filterScripts('qb')">QB-Core</button>
+                <button class="filter-btn" onclick="filterScripts('esx')">ESX</button>
+                <button class="filter-btn" onclick="filterScripts('standalone')">Standalone</button>
+            </div>
             
-            <div class="card">
-                <div class="card-img">
-                    <img src="https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Garage+V2" alt="Premium Garage">
-                    <span class="tag">qb / esx / standalone</span>
+            <div class="grid" id="scripts-grid">
+                <!-- Scriptler JavaScript ile dinamik ve filtrelenebilir olarak yüklenecek -->
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= SIKÇA SORULAN SORULAR (SSS) SECTION ================= -->
+    <main id="page-faq" class="page-section">
+        <section class="faq-section">
+            <div class="section-header">
+                <h2>Sıkça Sorulan Sorular</h2>
+                <p>Aklınıza takılan genel soruları ve teknik detayları aşağıda bulabilirsiniz.</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                    <span>Scriptler Keymaster (Escrow) korumalı mı?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
                 </div>
-                <div class="card-body">
-                    <h3 class="card-title">PapaZ Advanced Garage</h3>
-                    <p class="card-desc">Modern minimalist UI arayüzü, vale çağırma, detaylı araç hasarı kaydetme, GPS entegrasyonu ve tamamen optimize kod yapısı.</p>
-                    <div class="card-footer">
-                        <div class="price-wrapper">
-                            <span class="price-label">Fiyat</span>
-                            <span class="price">150 ₺</span>
-                        </div>
-                        <a href="#" class="buy-btn">
-                            <i class="fa-solid fa-cart-shopping"></i> Satın Al
-                        </a>
-                    </div>
+                <div class="faq-body">
+                    <p>Evet, scriptlerimizin ana fonksiyonları Cfx.re Escrow sistemiyle şifrelenmiştir. Ancak tasarım (UI), konfigürasyon (config.lua) ve dil dosyaları gibi özelleştirebileceğiniz tüm alanlar tamamen açıktır.</p>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-img">
-                    <img src="https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Phone" alt="Premium Phone">
-                    <span class="tag">Standalone</span>
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                    <span>Satın aldıktan sonra kurulum desteği veriyor musunuz?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
                 </div>
-                <div class="card-body">
-                    <h3 class="card-title">PapaZ Smart Phone</h3>
-                    <p class="card-desc">Gelişmiş sosyal medya (Insta, Twitter), borsa modülü, vale, gerçekçi bankacılık uygulaması ve özel widget desteği sunan akıllı telefon.</p>
-                    <div class="card-footer">
-                        <div class="price-wrapper">
-                            <span class="price-label">Fiyat</span>
-                            <span class="price">350 ₺</span>
-                        </div>
-                        <a href="#" class="buy-btn">
-                            <i class="fa-solid fa-cart-shopping"></i> Satın Al
-                        </a>
-                    </div>
+                <div class="faq-body">
+                    <p>Tabii ki! Discord sunucumuz üzerinden destek talebi (ticket) açarak, teknik ekibimizden kurulum ve olası hataların çözümü konusunda ücretsiz destek alabilirsiniz.</p>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-img">
-                    <img src="https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Robbery" alt="Robbery Pack">
-                    <span class="tag">qb-core</span>
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                    <span>Scriptleriniz optimize mi? Sunucuyu yorar mı?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
                 </div>
-                <div class="card-body">
-                    <h3 class="card-title">PapaZ Interactive Robbery</h3>
-                    <p class="card-desc">Yeni nesil minigame mekanikleri, kameraları sabote etme, termal matkap sistemleri ve entegreli polis takip radarı içeren soygun paketi.</p>
-                    <div class="card-footer">
-                        <div class="price-wrapper">
-                            <span class="price-label">Fiyat</span>
-                            <span class="price">200 ₺</span>
-                        </div>
-                        <a href="#" class="buy-btn">
-                            <i class="fa-solid fa-cart-shopping"></i> Satın Al
-                        </a>
-                    </div>
+                <div class="faq-body">
+                    <p>Tüm scriptlerimiz performans öncelikli yazılmaktadır. Boşta (idle) 0.00ms - 0.01ms değerlerinde çalışır ve yüksek oyuncu sayılarında bile sunucunuzda gecikmeye (lag) neden olmaz.</p>
                 </div>
             </div>
 
+            <div class="faq-item">
+                <div class="faq-header" onclick="toggleFaq(this)">
+                    <span>Güncellemeler ücretsiz mi?</span>
+                    <i class="fa-solid fa-chevron-down faq-icon"></i>
+                </div>
+                <div class="faq-body">
+                    <p>Evet, satın aldığınız her scriptin gelecek tüm optimizasyon, hata düzeltmesi ve özellik güncellemeleri Keymaster hesabınıza otomatik olarak ücretsiz tanımlanır.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= KULLANIM KOŞULLARI SECTION ================= -->
+    <main id="page-terms" class="page-section">
+        <section class="terms-section">
+            <div class="section-header">
+                <h2>Kullanım Koşulları & Lisans</h2>
+                <p>Sitemizden alışveriş yapmadan önce lütfen aşağıdaki maddeleri dikkatlice okuyunuz.</p>
+            </div>
+
+            <div class="terms-box">
+                <h3>1. Lisans ve Kullanım Hakkı</h3>
+                <p>PapaZ Development üzerinden satın alınan tüm ürünler, alıcının Cfx.re (Keymaster) hesabına lisanslanır. Bir ürün lisansı yalnızca tek bir Keymaster hesabında ve o hesaba bağlı sunucularda aktif edilebilir.</p>
+
+                <h3>2. İade Politikası</h3>
+                <p>Dijital ürünlerin doğası gereği (indirme ve lisans anahtarının teslim edilmesi durumunda), satın alınan ürünlerde teknik bir arıza veya çalışmama durumu ekibimiz tarafından doğrulanmadığı sürece keyfi iade yapılmamaktadır.</p>
+
+                <h3>3. Dağıtım ve Kötüye Kullanım</h3>
+                <p>Ürünlerimizin sızdırılması (leak), izinsiz olarak üçüncü şahıslarla paylaşılması, satılması veya kaynak kodlarının tersine mühendislik yoluyla kırılmaya çalışılması kesinlikle yasaktır. Tespiti halinde lisanslar süresiz olarak iptal edilecektir.</p>
+
+                <h3>4. Güncelleme ve Destek Sorumluluğu</h3>
+                <p>PapaZ Development, FiveM veya Rockstar Games'in getireceği büyük altyapı güncellemelerinden sonra scriptleri uyumlu hale getirmek için makul bir süre içinde güncelleme yayınlayacağını taahhüt eder.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= ALIŞVERİŞ SEPETİ SIDEBAR ================= -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Alışveriş Sepetiniz</h3>
+            <button class="cart-close" onclick="toggleCart()"><i class="fa-solid fa-times"></i></button>
         </div>
-    </section>
+        <div class="cart-items" id="cart-items-container">
+            <!-- Sepet içi JavaScript ile dolacak -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Toplam Fiyat:</span>
+                <span id="cart-total-price">0 ₺</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Ödemeye Geç (Discord/Tebex)</button>
+        </div>
+    </div>
 
+    <!-- Footer -->
     <footer>
         <div class="footer-grid">
             <div class="footer-brand">
@@ -736,25 +1082,238 @@
             <div class="footer-links">
                 <h4>Hızlı Menü</h4>
                 <ul>
-                    <li><a href="#">Ana Sayfa</a></li>
-                    <li><a href="#scripts">Scriptler</a></li>
-                    <li><a href="#özellikler">Neden Biz?</a></li>
+                    <li><a onclick="navigate('home')">Ana Sayfa</a></li>
+                    <li><a onclick="navigate('scripts')">Scriptler</a></li>
+                    <li><a onclick="navigate('faq')">Sıkça Sorulan Sorular (SSS)</a></li>
                 </ul>
             </div>
             <div class="footer-links">
-                <h4>Destek & İletişim</h4>
+                <h4>Destek & Lisans</h4>
                 <ul>
-                    <li><a href="https://discord.gg/papazdev" target="_blank">Discord Ticket</a></li>
-                    <li><a href="#">Kullanım Koşulları</a></li>
-                    <li><a href="#">SSS</a></li>
+                    <li><a href="https://discord.gg/papazdev" target="_blank">Discord Destek</a></li>
+                    <li><a onclick="navigate('terms')">Kullanım Koşulları</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 PapaZ Development. Tüm Hakları Saklıdır.</p>
-            <p style="font-size: 11px;">Bu site Cfx.re veya Rockstar Games ile ortaklık içermemektedir.</p>
+            <p style="font-size: 11px;">Bu site Cfx.re veya Rockstar Games ile resmi bir ortaklık içermemektedir.</p>
         </div>
     </footer>
 
+    <!-- ================= JAVASCRIPT KONTROLLERİ ================= -->
+    <script>
+        // Ürün Veritabanı
+        const scriptsData = [
+            {
+                id: 1,
+                title: "PapaZ Advanced Garage",
+                desc: "Modern minimalist UI arayüzü, vale çağırma, detaylı araç hasarı kaydetme, GPS entegrasyonu ve tamamen optimize kod yapısı.",
+                price: 150,
+                tag: "qb",
+                tagText: "qb-core",
+                img: "https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Garage+V2"
+            },
+            {
+                id: 2,
+                title: "PapaZ Smart Phone",
+                desc: "Gelişmiş sosyal medya (Insta, Twitter), borsa modülü, vale, gerçekçi bankacılık uygulaması ve özel widget desteği sunan akıllı telefon.",
+                price: 350,
+                tag: "standalone",
+                tagText: "Standalone",
+                img: "https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Phone"
+            },
+            {
+                id: 3,
+                title: "PapaZ Interactive Robbery",
+                desc: "Yeni nesil minigame mekanikleri, kameraları sabote etme, termal matkap sistemleri ve entegreli polis takip radarı içeren soygun paketi.",
+                price: 200,
+                tag: "qb",
+                tagText: "qb-core",
+                img: "https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Robbery"
+            },
+            {
+                id: 4,
+                title: "PapaZ Crafting System",
+                desc: "Tecrübe puanı (XP) sistemli, kategorize edilebilir eşya üretme tablosu ve animasyonlu modern craft arayüzü.",
+                price: 120,
+                tag: "esx",
+                tagText: "esx / qb",
+                img: "https://via.placeholder.com/450x210/0f1420/00f2fe?text=PapaZ+Craft"
+            }
+        ];
+
+        // Sepet Durumu
+        let cart = [];
+
+        // Sayfa Değiştirme Fonksiyonu (Navigation)
+        function navigate(pageId) {
+            // Tüm sayfaları gizle
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Seçilen sayfayı göster
+            document.getElementById(`page-${pageId}`).classList.add('active');
+
+            // Header linklerinin aktiflik durumunu güncelle
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.classList.remove('active-nav');
+            });
+            
+            const activeLink = document.getElementById(`nav-${pageId}`);
+            if (activeLink) {
+                activeLink.classList.add('active-nav');
+            }
+
+            // Sayfayı yukarı kaydır
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mağaza Kartlarını Yükleme Fonksiyonu
+        function renderScripts(filter = 'all') {
+            const grid = document.getElementById('scripts-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? scriptsData 
+                : scriptsData.filter(item => item.tag === filter);
+
+            filtered.forEach(script => {
+                const card = `
+                    <div class="card">
+                        <div class="card-img">
+                            <img src="${script.img}" alt="${script.title}">
+                            <span class="tag">${script.tagText}</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">${script.title}</h3>
+                            <p class="card-desc">${script.desc}</p>
+                            <div class="card-footer">
+                                <div class="price-wrapper">
+                                    <span class="price-label">Fiyat</span>
+                                    <span class="price">${script.price} ₺</span>
+                                </div>
+                                <button class="buy-btn" onclick="addToCart(${script.id})">
+                                    <i class="fa-solid fa-cart-shopping"></i> Sepete Ekle
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // Script Filtreleme Kontrolü
+        function filterScripts(category) {
+            // Filtre butonlarının aktifliğini güncelle
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active-filter');
+            });
+            event.target.classList.add('active-filter');
+
+            // Listeyi güncelle
+            renderScripts(category);
+        }
+
+        // SSS Accordion Kontrolü
+        function toggleFaq(header) {
+            const item = header.parentElement;
+            const isOpen = item.classList.contains('open');
+            
+            // Diğer tüm SSS'leri kapat
+            document.querySelectorAll('.faq-item').forEach(i => {
+                i.classList.remove('open');
+            });
+
+            // Duruma göre seçilen sss'yi aç veya kapat
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        }
+
+        // Sepet Aç/Kapat
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('show');
+        }
+
+        // Sepete Ürün Ekleme
+        function addToCart(id) {
+            const product = scriptsData.find(item => item.id === id);
+            
+            // Eğer ürün zaten sepette yoksa ekle
+            if (!cart.some(item => item.id === id)) {
+                cart.push(product);
+                updateCartUI();
+                
+                // Kullanıcıya ekleme bildirim hissi için sepeti yanıp söndür
+                const trigger = document.querySelector('.cart-trigger');
+                trigger.style.transform = 'scale(1.15)';
+                setTimeout(() => trigger.style.transform = 'scale(1)', 200);
+            } else {
+                alert("Bu ürün zaten sepetinizde ekli!");
+            }
+        }
+
+        // Sepetten Ürün Silme
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        // Sepet Arayüzünü Güncelleme
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const totalText = document.getElementById('cart-total-price');
+            const countBadge = document.getElementById('cart-count');
+
+            container.innerHTML = '';
+            
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="cart-empty">Sepetiniz şu anda boş.</div>';
+                totalText.innerText = '0 ₺';
+                countBadge.innerText = '0';
+                return;
+            }
+
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                const itemHTML = `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <h4>${item.title}</h4>
+                            <span>${item.price} ₺</span>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart(${item.id})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+
+            totalText.innerText = `${total} ₺`;
+            countBadge.innerText = cart.length;
+        }
+
+        // Ödeme Yap Butonu Tetikleyici
+        function checkout() {
+            if(cart.length === 0) {
+                alert("Ödeme aşamasına geçmek için sepetinizde ürün bulunmalıdır.");
+                return;
+            }
+            // Bu alanda Tebex sitenizin veya Discord botunuzun yönlendirme adresini koyabilirsiniz.
+            alert("Sanal Mağaza Yönlendirmesi:\n\nSatın almak istediğiniz ürünler için Tebex/Discord mağazasına aktarılıyorsunuz.");
+            window.open("https://discord.gg/papazdev", "_blank");
+        }
+
+        // Başlangıç Kurulumları
+        window.onload = function() {
+            renderScripts();
+            updateCartUI();
+        };
+    </script>
 </body>
 </html>
